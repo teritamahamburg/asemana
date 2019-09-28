@@ -96,7 +96,7 @@ export default {
               admin: item.admin.name,
               course: item.course.name,
               room: item.room.number,
-              children: item.children.map(child => ({
+              children: item.children.map((child) => ({
                 ...child,
                 room: child.room ? child.room.number : item.room.number,
               })),
@@ -125,13 +125,13 @@ export default {
       },
       update({ searchItems: items, searchChildren: children }) {
         return {
-          items: items.map(item => ({
+          items: items.map((item) => ({
             ...item,
             admin: item.admin.name,
             course: item.course.name,
             room: item.room.number,
           })),
-          children: children.map(child => ({
+          children: children.map((child) => ({
             ...child,
             room: child.room ? child.room.number : null,
             name: child.name ? child.name : child.item.name,
@@ -166,7 +166,7 @@ export default {
   },
   mounted() {
     const { hash } = window.location;
-    if (hash.length === 0 || viewTypes.findIndex(v => v.type === hash.substring(1)) === -1) {
+    if (hash.length === 0 || viewTypes.findIndex((v) => v.type === hash.substring(1)) === -1) {
       window.location.hash = `#${this.$store.state.itemsView.viewType}`;
     } else {
       this.$store.commit('setViewType', hash.substring(1));
@@ -236,7 +236,7 @@ export default {
     computeSearchOfflineItems: debounce(() => {
       const text = this.text.toLowerCase();
       this.search.offlineItems = this.$store.getters.itemsWithOfflineParanoid
-        .filter(item => ['name', 'code', 'admin', 'course', 'room']
+        .filter((item) => ['name', 'code', 'admin', 'course', 'room']
           .some((k) => {
             if (!item[k]) return false;
             return item[k].toString().toLowerCase().includes(text);

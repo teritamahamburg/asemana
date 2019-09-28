@@ -1,6 +1,8 @@
 import fs from 'fs';
 import { extname } from 'path';
 
+import Sequelize from 'sequelize';
+
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-koa';
 import { GraphQLDate, GraphQLDateTime, GraphQLTime } from 'graphql-iso-date';
 
@@ -48,7 +50,7 @@ const convertDate = (date) => {
   return d.toISOString().substring(0, 10);
 };
 
-const itemToQL = item => (item ? ({
+const itemToQL = (item) => (item ? ({
   ...item,
   checkedAt: convertDate(item.checkedAt),
   disposalAt: convertDate(item.disposalAt),
@@ -91,10 +93,10 @@ class GraphQLMiddleware {
           ['room.number', `%${search}%`],
         ] : [],
         orders: sort
-          .filter(s => itemsSortProperties.includes(s[0]))
+          .filter((s) => itemsSortProperties.includes(s[0]))
           .map(([col, order]) => [col, order === 'asc' ? 'asc' : 'desc']),
         itemEnum,
-      }).then(items => items.map(i => itemToQL(i))),
+      }).then((items) => items.map((i) => itemToQL(i))),
       item: async (parent, { id }) => {
         const item = await this.db.items.findOne({
           paranoid: false,
@@ -127,9 +129,9 @@ class GraphQLMiddleware {
           ['room.number', `%${search}%`],
         ] : [],
         orders: sort
-          .filter(s => s[0] === 'id')
+          .filter((s) => s[0] === 'id')
           .map(([col, order]) => [col, order === 'asc' ? 'asc' : 'desc']),
-      }).then(children => children.map((child) => {
+      }).then((children) => children.map((child) => {
         /* eslint-disable no-param-reassign */
         child.internalId = child.id;
         child.id = util.concatId(child.itemId, child.childId);
@@ -144,7 +146,7 @@ class GraphQLMiddleware {
           },
           order: [['id', 'desc']],
           limit: 1,
-        }).then(c => itemToQL(c.dataValues));
+        }).then((c) => itemToQL(c.dataValues));
       },
       csv: (parent, { paranoid }) => this.db.queries.csv({ paranoid }),
       users: () => this.db.users.findAll(),
@@ -202,7 +204,7 @@ class GraphQLMiddleware {
         }
 
         if (data.amount > 1) {
-          await this.db.childHistories.bulkCreate([...Array(data.amount).keys()].map(i => ({
+          await this.db.childHistories.bulkCreate([...Array(data.amount).keys()].map((i) => ({
             itemId: item.id,
             childId: i + 1,
           })));
@@ -228,11 +230,11 @@ class GraphQLMiddleware {
       },
       addItems: (parent, { data }) => mapAsync(
         data,
-        d => self.addItem(parent, { data: d }),
+        (d) => self.addItem(parent, { data: d }),
       ),
       editItem: async (parent, { id, data }) => {
         const len = Object.values(data)
-          .filter(v => v !== undefined)
+          .filter((v) => v !== undefined)
           .length;
         if (len <= 0) {
           return {
@@ -296,7 +298,7 @@ class GraphQLMiddleware {
       },
       editItems: (parent, { ids, data }) => mapAsync(
         ids,
-        id => self.editItem(parent, { id, data }),
+        (id) => self.editItem(parent, { id, data }),
       ),
       removeItems: async (parent, { ids }) => {
         await this.db.items.destroy({
@@ -335,7 +337,7 @@ class GraphQLMiddleware {
       },
       // child Mutations
       editChild: async (parent, { childId: id, data }) => {
-        if (Object.keys(data).filter(k => !['createdAt'].includes(k)).length === 0) {
+        if (Object.keys(data).filter((k) => !['createdAt'].includes(k)).length === 0) {
           return {
             success: false,
             message: 'change at least one',
@@ -376,8 +378,8 @@ class GraphQLMiddleware {
           createdAt: data.createdAt,
         };
         if (Object.keys(data)
-          .filter(k => !['createdAt'].includes(k))
-          .every(k => data[k] === edit[k])) {
+          .filter((k) => !['createdAt'].includes(k))
+          .every((k) => data[k] === edit[k])) {
           return {
             success: false,
             message: 'part data not change',
@@ -398,7 +400,7 @@ class GraphQLMiddleware {
       },
       editChildren: (parent, { childIds, data }) => mapAsync(
         childIds,
-        childId => self.editChild(parent, { childId, data }),
+        (childId) => self.editChild(parent, { childId, data }),
       ),
       removeChildren: async (parent, { childIds }) => {
         const ids = childIds.map((a) => {
@@ -407,7 +409,7 @@ class GraphQLMiddleware {
         });
         await this.db.childHistories.destroy({
           where: {
-            [this.db.Sequelize.Op.or]: ids,
+            [Sequelize.Op.or]: ids,
           },
         });
         return {
@@ -429,7 +431,7 @@ class GraphQLMiddleware {
         }
         await this.db.childHistories.restore({
           where: {
-            id: children.map(c => c.id),
+            id: children.map((c) => c.id),
           },
         });
         return {
@@ -454,7 +456,7 @@ class GraphQLMiddleware {
       },
       children: async ({ id }) => {
         const children = await this.db.queries.children({ itemId: id });
-        return children.map(child => ({
+        return children.map((child) => ({
           ...child,
           id: util.concatId(id, child.childId),
           internalId: child.id,
@@ -475,7 +477,7 @@ class GraphQLMiddleware {
             ['id', 'desc'],
           ],
         });
-        return children.slice(1).map(child => ({
+        return children.slice(1).map((child) => ({
           ...child.dataValues,
           id: util.concatId(itemId, child.childId),
           internalId: child.id,

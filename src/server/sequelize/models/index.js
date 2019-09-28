@@ -29,7 +29,6 @@ Object.keys(db).forEach((modelName) => {
 });
 
 db.sequelize = sequelize;
-db.Sequelize = Sequelize;
 
 // TODO: replace sequelize query
 db.queries = {
@@ -163,7 +162,7 @@ db.queries = {
         purchasedAt || '","' || ifnull(checkedAt, '') || '","' || ifnull(disposalAt, '') || '","' ||
        ifnull(depreciationAt, '') || '","' || createdAt || '","' || ifnull(deletedAt, '') || '"' as row`);
     const itemRows = await db.sequelize.query(`${itemQuery}${paranoid ? '' : ' WHERE deletedAt IS NULL'} ORDER BY id;`, {
-      type: db.Sequelize.QueryTypes.SELECT,
+      type: Sequelize.QueryTypes.SELECT,
     }).then((rows) => rows.map(({ row }) => row).join('\n'));
     const childSelect = '\'"\' || itemId || \'","\' || childId || \'","","\' || replace(ifnull(name, \'\'), \'"\', \'""\') || \'","","","","","\' || ifnull(`room.number`, \'\') || \'","","\' || ifnull(checkedAt, \'\') || \'","","","\' || createdAt || \'","\' || ifnull(deletedAt, \'\') || \'"\' as row';
 
@@ -171,7 +170,7 @@ db.queries = {
     const childQuery = `SELECT ${childSelect} FROM (${db.queries.childSelectQuery.replace('__INNER_ATTR__', 'GROUP BY c.itemId, c.childId')}${paranoid ? '' : ' WHERE child.deletedAt IS NULL'}) ORDER BY itemId, childId;`;
 
     const childRows = await db.sequelize.query(childQuery, {
-      type: db.Sequelize.QueryTypes.SELECT,
+      type: Sequelize.QueryTypes.SELECT,
     }).then((rows) => rows.map(({ row }) => row).join('\n'));
     return {
       columns: ['itemId', 'childId', 'seal', 'name', 'code', 'amount', 'admin', 'course', 'room', 'purchasedAt', 'checkedAt', 'disposalAt', 'depreciationAt', 'createdAt', 'deletedAt'],
@@ -191,6 +190,7 @@ db.queries = {
  * @prop {object} courses
  * @prop {object} queries
  * @prop {object} sequelize
- * @prop {object} Sequelize
  */
-module.exports = db;
+// module.exports = db;
+
+export default db;
