@@ -1,4 +1,4 @@
-# TeritamaHamburg
+# あせまな - Asemana
 
 [![shields.io](https://img.shields.io/badge/latest-v1.3.9-brightgreen?style=for-the-badge)](https://hub.docker.com/r/syuchan1005/teritama)
 
@@ -6,9 +6,16 @@
 
 ## Docker
 ```bash
-docker run \
+$ docker run \
     -p 80 \
     -v /{Your path}/storage:/teritama/storage \
     -v /{Your path}/production.sqlite:/teritama/production.sqlite \
     syuchan1005/teritama:1.3.9
+```
+
+## Development
+```bash
+$ npm install
+$ npm run client:serve
+$ npm run server:serve
 ```

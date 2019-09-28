@@ -1,18 +1,18 @@
 FROM node:12.10-alpine as build
 
-ARG version=v1.3.9
+COPY . /build
 
-RUN apk add --no-cache git \
-    && git clone https://github.com/teritamahamburg/frontend.git --depth 1 -b ${version} \
-    && git clone https://github.com/teritamahamburg/backend.git  --depth 1 -b ${version} \
-    && cd frontend && npm install && npm run build && cd .. \
-    && cd backend  && npm install && npm run build && cd .. \
-    && mkdir teritama \
-    && mv /frontend/dist /teritama/public \
-    && mv /backend/dist  /teritama/dist \
-    && mv /backend/src   /teritama/src \
-    && mv /backend/package.json      /teritama \
-    && mv /backend/package-lock.json /teritama
+WORKDIR /build
+
+ENV NODE_ENV="production"
+
+RUN npm ci && npm run build \
+    && mkdir /asemana && mkdir /asemana/storage \
+    && cp -r /build/dist/client /asemana/public \
+    && cp -r /build/dist/server /asemana/server \
+    && mv .sequelizerc /asemana/ \
+    && mv package.json /asemana/ \
+    && mv package-lock.json /asemana/
 
 FROM node:12.10-alpine
 
@@ -21,24 +21,22 @@ LABEL name="TeritamaHamburg"
 
 EXPOSE 80
 
-ENV DEBUG="" \
-    NODE_ENV="production"
+ENV DEBUG="" NODE_ENV="production"
 
-RUN apk add --no-cache supervisor=3.3.4-r1 nginx=1.14.2-r4 \
-    && mkdir /teritama
+RUN apk add --no-cache supervisor=3.3.4-r1 nginx=1.14.2-r4 && mkdir /asemana
 
-COPY --from=build ["/teritama/package.json", "/teritama/package-lock.json", "/teritama/"]
+COPY --from=build ["/asemana/package.json", "/asemana/package-lock.json", "/asemana/"]
 
-WORKDIR /teritama
+WORKDIR /asemana
 
 RUN npm ci --only=production
 
 COPY nginx.conf /etc/nginx/
 COPY supervisord.conf /etc/
 
-COPY --from=build /teritama /teritama
+COPY --from=build /asemana /asemana
 
-# "/teritama/production.sqlite" is file
-VOLUME ["/teritama/storage"]
+# "/asemana/production.sqlite" is file
+VOLUME ["/asemana/storage"]
 
 CMD npm run db:migrate -- --env production; /usr/bin/supervisord

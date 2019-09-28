@@ -27,7 +27,6 @@ app.use(router.allowedMethods());
 
 app.use(Serve('storage'));
 
-app.use(Serve('public'));
 app.use(apiFallback());
 app.use(Serve('public'));
 
