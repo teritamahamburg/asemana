@@ -121,7 +121,7 @@ export default {
   },
   data() {
     return {
-      id: '1',
+      id: undefined,
       applyChange: false,
       showApplyDialog: false,
       applyDialog: {
