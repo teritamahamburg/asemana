@@ -1,10 +1,17 @@
 const path = require('path');
+const webpack = require('webpack');
+
+const CopyPlugin = require('copy-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
 const nodeExternals = require('webpack-node-externals');
 
+const entryPath = path.resolve(__dirname, 'src', 'server');
+const outPath = path.resolve(__dirname, 'dist', 'server');
 module.exports = {
-  entry: path.resolve(__dirname, 'src', 'index.js'),
+  entry: path.resolve(entryPath, 'index.js'),
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: outPath,
     filename: 'index.js',
   },
   target: 'node',
@@ -43,4 +50,15 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    new webpack.ProgressPlugin(),
+    new CleanWebpackPlugin(),
+    new CopyPlugin([
+      {
+        from: entryPath,
+        to: outPath,
+        ignore: ['!schema.graphql'],
+      },
+    ]),
+  ],
 };

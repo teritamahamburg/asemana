@@ -4,7 +4,7 @@ import Router from 'koa-router';
 import Serve from 'koa-static';
 import apiFallback from 'koa-history-api-fallback';
 import GraphQLMiddleware from './GraphQLMiddleware';
-import db from './sequelize/models/index';
+import db from './sequelize/models';
 
 const app = new Koa();
 app.use(BodyParser());

@@ -4,7 +4,7 @@ import { extname } from 'path';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-koa';
 import { GraphQLDate, GraphQLDateTime, GraphQLTime } from 'graphql-iso-date';
 
-import typeDefs from '../schema.graphql';
+import typeDefs from './schema.graphql';
 
 /**
  * @link {frontend/src/Home.vue}
