@@ -22,7 +22,7 @@ export default {
     const { data, ids } = query.variables;
     const { itemEdits } = state.offlineItem;
     ids.forEach((id) => {
-      const i = itemEdits.findIndex(e => e.id === id);
+      const i = itemEdits.findIndex((e) => e.id === id);
       if (data.seal) {
         data.seal = `${data.seal.name}${nameSeparator}${data.seal.url}`;
       }
@@ -45,7 +45,7 @@ export default {
     if (data.seal) {
       data.seal = sealImageToFile(data.seal);
     }
-    query.variables.ids = ids.map(id => state.offlineItem.temp.ids[id] || id);
+    query.variables.ids = ids.map((id) => state.offlineItem.temp.ids[id] || id);
     await vm.$apollo.mutate(query);
   },
 };

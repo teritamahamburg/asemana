@@ -120,13 +120,13 @@ export default {
       return this.items.filter(({ id }) => !id.includes(','));
     },
     hasItem() {
-      return this.items.some(item => !item.id.includes(','));
+      return this.items.some((item) => !item.id.includes(','));
     },
     childList() {
       return this.items.filter(({ id }) => id.includes(','));
     },
     hasChildItem() {
-      return this.items.some(item => item.id.includes(','));
+      return this.items.some((item) => item.id.includes(','));
     },
   },
   methods: {

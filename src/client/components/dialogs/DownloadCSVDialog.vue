@@ -81,12 +81,12 @@ export default {
         const items = this.paranoid
           ? this.$store.getters.itemsWithOfflineParanoid
           : this.$store.getters.itemsWithOffline;
-        const rows = items.map(item => csvColumns.map(k => `"${item[k] || ''}"`).join(',')).join('\n');
+        const rows = items.map((item) => csvColumns.map((k) => `"${item[k] || ''}"`).join(',')).join('\n');
         this.queryResult(csvColumns, rows);
       }
     },
     queryResult(columns, rows) {
-      csvDownload(`${columns.map(s => this.$t(`item.${s}`)).join(',')}\n${rows}`);
+      csvDownload(`${columns.map((s) => this.$t(`item.${s}`)).join(',')}\n${rows}`);
       this.$emit('change', false);
     },
   },

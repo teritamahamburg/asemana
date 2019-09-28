@@ -5,7 +5,7 @@ export default {
     const { data, ids } = query.variables;
     const { childEdits } = state.offlineItem;
     ids.forEach((id) => {
-      const i = childEdits.findIndex(e => e.id === id);
+      const i = childEdits.findIndex((e) => e.id === id);
       if (i === -1) {
         childEdits.push({
           ...data,
@@ -22,7 +22,7 @@ export default {
   },
   async commitMutate(vm, query, state) {
     const { ids } = query.variables;
-    query.variables.ids = ids.map(id => state.offlineItem.temp.ids[id] || id);
+    query.variables.ids = ids.map((id) => state.offlineItem.temp.ids[id] || id);
     await vm.$apollo.mutate(query);
   },
 };

@@ -95,7 +95,7 @@ export default {
         let start = startTime;
         const bin = `32${this.text
           .split('')
-          .map(c => Number(c).toString(2).padStart(4, '0'))
+          .map((c) => Number(c).toString(2).padStart(4, '0'))
           .join('')
           .split('')
           .join('2')
