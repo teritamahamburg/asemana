@@ -1,0 +1,14 @@
+query ($childId: ID!){
+    child(childId: $childId) {
+        childHistories: histories {
+            id
+            name
+            checkedAt
+            room {
+                id
+                number
+            }
+            createdAt
+        }
+    }
+}
