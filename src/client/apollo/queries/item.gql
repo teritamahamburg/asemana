@@ -1,0 +1,27 @@
+query ($id: ID!){
+    item(id: $id) {
+        id
+        seal
+        name
+        code
+        amount
+        purchasedAt
+        admin {
+            id
+            name
+        }
+        course {
+            id
+            name
+        }
+        checkedAt
+        room {
+            id
+            number
+        }
+        disposalAt
+        depreciationAt
+        createdAt
+        deletedAt
+    }
+}
