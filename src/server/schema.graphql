@@ -1,0 +1,182 @@
+type Query {
+    items(sort: [[String!]!] = [["id", "asc"]], search: String, itemEnum: ItemEnum = NORMAL): [Item!]!
+    item(id: ID!): Item
+
+    children(sort: [[String!]!] = [["id", "asc"]], search: String, childEnum: ChildEnum = NORMAL): [ChildItem!]!
+    child(childId: ID!): ChildItem
+
+    users: [User!]!
+
+    csv(paranoid: Boolean = false): CSV!
+}
+
+type Mutation {
+    addItem(data: ItemInput!): ItemResult!
+    addItems(data: [ItemInput!]!): [ItemResult!]!
+    editItem(id: ID!, data: EditItemInput!): Result!
+    editItems(ids: [ID!]!, data: EditItemInput!): [Result!]!
+    removeItems(ids: [ID!]!): Result!
+    restoreItem(id: ID!): Result!
+
+    # [always added] addChild(internalId: ID!, data: ChildItemInput!): ItemResult!
+    editChild(childId: ID!, data: EditChildItemInput!): Result!
+    editChildren(childIds: [ID!]!, data: EditChildItemInput!): [Result!]!
+    removeChildren(childIds: [ID!]!): Result!
+    restoreChild(childId: ID!): Result!
+}
+
+scalar Date
+scalar Time
+scalar DateTime
+scalar Upload
+
+enum ItemEnum {
+    ONLY_DELETED,
+    ALL,
+    NORMAL,
+}
+
+enum ChildEnum {
+    ONLY_DELETED,
+    NORMAL,
+}
+
+type User {
+    id: ID!
+    name: String!
+}
+
+type Course {
+    id: ID!
+    name: String!
+}
+
+type Room {
+    id: ID!
+    number: Int!
+}
+
+type Result {
+    success: Boolean!
+    message: String
+}
+
+type ItemResult {
+    success: Boolean!
+    message: String
+    item: Item
+}
+
+type Item {
+    # items Table
+    id: ID!
+    name: String!
+    code: String!
+    amount: Int!
+    admin: User!
+    course: Course!
+    purchasedAt: Date!
+
+    createdAt: DateTime!
+    deletedAt: DateTime
+
+    # itemsHistories Table
+    room: Room!
+    seal: String
+    checkedAt: Date
+    disposalAt: Date
+    depreciationAt: Date
+
+    # Option
+    histories: [HistoryItem!]!
+    children: [ChildItem!]!
+}
+
+type HistoryItem {
+    id: ID!
+    room: Room!
+    seal: String
+    checkedAt: Date
+    disposalAt: Date
+    depreciationAt: Date
+
+    createdAt: DateTime!
+}
+
+type ChildItem {
+    internalId: ID!
+    id: ID!
+    itemId: ID!
+    childId: ID!
+    name: String
+    room: Room
+    checkedAt: Date
+
+    createdAt: DateTime!
+    deletedAt: DateTime
+
+    histories: [HistoryChildItem!]!
+
+    item: Item!
+}
+
+type HistoryChildItem {
+    internalId: ID!
+    id: ID!
+    itemId: ID!
+    childId: ID!
+    name: String
+    room: Room
+    checkedAt: Date
+
+    createdAt: DateTime!
+    deletedAt: DateTime
+}
+
+type CSV {
+    columns: [String!]!
+    rows: String!
+}
+
+input ItemInput {
+    # items
+    name: String!
+    code: String!
+    amount: Int = 1
+    admin: String!
+    course: String!
+    purchasedAt: Date!
+
+    # itemHistories
+    room: Int!
+    seal: Upload
+    checkedAt: Date
+    disposalAt: Date
+    depreciationAt: Date
+
+    createdAt: DateTime
+}
+
+input EditItemInput {
+    room: Int
+    seal: Upload
+    checkedAt: Date
+    disposalAt: Date
+    depreciationAt: Date
+}
+
+# input ChildItemInput {
+#     name: String
+#     room: Int
+#     checkedAt: Date
+#
+#     createdAt: DateTime
+# }
+
+input EditChildItemInput {
+    name: String
+    room: Int
+    checkedAt: Date
+
+    createdAt: DateTime
+}
