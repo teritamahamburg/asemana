@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   devServer: {
     host: '0.0.0.0',
@@ -28,7 +30,7 @@ module.exports = {
     },
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {
-      swSrc: 'src/service-worker.js',
+      swSrc: 'src/client/service-worker.js',
       swDest: 'service-worker.js',
     },
   },
@@ -43,6 +45,14 @@ module.exports = {
   configureWebpack: {
     resolveLoader: {
       modules: ['lib'],
+    },
+    entry: {
+      app: './src/client/main.js',
+    },
+    resolve: {
+      alias: {
+        '@': path.join(__dirname, 'src', 'client'),
+      },
     },
   },
   chainWebpack: (config) => {

@@ -14,7 +14,7 @@ import store from './store';
 import vuetify from './plugins/vuetify';
 import './registerServiceWorker';
 
-import './apollo/mutations/index';
+import '@/apollo/mutations';
 
 Vue.config.productionTip = false;
 

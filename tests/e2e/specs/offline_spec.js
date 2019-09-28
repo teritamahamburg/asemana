@@ -1,6 +1,6 @@
 import { dbReset, gqlSupport } from '../support/gqlSupport';
 import generalSpec from '../generalSpec';
-import locale from '../../../src/locales/ja';
+import locale from '../../../src/client/locales/ja';
 
 gqlSupport(false);
 
