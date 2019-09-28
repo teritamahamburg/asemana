@@ -4,8 +4,6 @@ COPY . /build
 
 WORKDIR /build
 
-ENV NODE_ENV="production"
-
 RUN npm ci && npm run build \
     && mkdir /asemana && mkdir /asemana/storage \
     && cp -r /build/dist/client /asemana/public \
@@ -17,7 +15,7 @@ RUN npm ci && npm run build \
 FROM node:12.10-alpine
 
 LABEL maintainer="syuchan1005<syuchan.dev@gmail.com>"
-LABEL name="TeritamaHamburg"
+LABEL name="Asemana"
 
 EXPOSE 80
 
