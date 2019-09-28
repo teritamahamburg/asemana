@@ -11,7 +11,7 @@ export default {
   },
   async commitMutate(vm, query, state) {
     const { ids } = query.variables;
-    query.variables.ids = Object.keys(ids).map(id => state.offlineItem.temp.ids[id] || id);
+    query.variables.ids = Object.keys(ids).map((id) => state.offlineItem.temp.ids[id] || id);
     await vm.$apollo.mutate(query);
   },
 };

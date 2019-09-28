@@ -26,9 +26,9 @@ Vue.mixin({
       const excludePlural = ['removeItems', 'removeChildren'];
       const pluralSuffix = ['Items', 'Children'];
       if (!excludePlural.includes(mutationName)
-        && pluralSuffix.some(p => mutationName.endsWith(p))) {
+        && pluralSuffix.some((p) => mutationName.endsWith(p))) {
         const len = Object.values(options.variables)
-          .map(value => (Array.isArray(value) ? value.length : 0));
+          .map((value) => (Array.isArray(value) ? value.length : 0));
         return Promise.resolve({
           data: {
             [mutationName]: [...Array(len)].map(() => ({

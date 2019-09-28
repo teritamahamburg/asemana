@@ -81,10 +81,10 @@ const store = new Vuex.Store({
   getters: {
     itemsViewMenuVOn(state) {
       return {
-        edit: item => store.commit('showEditDialog', item, state.attrs.find(({ type, key }) => (type === 'action' && key === 'remove'))),
-        editHistory: item => store.commit('showEditHistoryDialog', item),
-        qrCode: item => store.commit('showCodeDialog', item),
-        remove: item => store.commit('showRemoveDialog', item),
+        edit: (item) => store.commit('showEditDialog', item, state.attrs.find(({ type, key }) => (type === 'action' && key === 'remove'))),
+        editHistory: (item) => store.commit('showEditHistoryDialog', item),
+        qrCode: (item) => store.commit('showCodeDialog', item),
+        remove: (item) => store.commit('showRemoveDialog', item),
       };
     },
   },

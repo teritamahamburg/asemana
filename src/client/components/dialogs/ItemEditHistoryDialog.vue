@@ -119,7 +119,7 @@ export default {
       const h = this.id.includes(',') ? this.childHistories : this.histories;
       if (!h || h.length === 0) return [];
       return Object.keys(h[0])
-        .map(k => ({ value: k, text: this.$t(`item.${k}`) }));
+        .map((k) => ({ value: k, text: this.$t(`item.${k}`) }));
     },
   },
 };

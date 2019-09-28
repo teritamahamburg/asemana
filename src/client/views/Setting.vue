@@ -62,7 +62,7 @@ export default {
       get() {
         const attrs = [...this.$store.state.attrs];
         attributes.forEach((k) => {
-          if (!attrs.some(a => a.type === 'value' && a.key === k)) {
+          if (!attrs.some((a) => a.type === 'value' && a.key === k)) {
             attrs.push({
               type: 'value',
               key: k,
@@ -71,7 +71,7 @@ export default {
           }
         });
         attributeActions.forEach((k) => {
-          if (!attrs.some(a => a.type === 'action' && a.key === k)) {
+          if (!attrs.some((a) => a.type === 'action' && a.key === k)) {
             attrs.push({
               type: 'action',
               key: k,

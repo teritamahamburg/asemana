@@ -81,7 +81,7 @@ export default {
       return !this.items || this.items.length === 0;
     },
     attrs() {
-      return ['id', 'name', 'code'].map(key => ({ type: 'value', key }));
+      return ['id', 'name', 'code'].map((key) => ({ type: 'value', key }));
     },
     items() {
       if (this.$store.state.online) {
