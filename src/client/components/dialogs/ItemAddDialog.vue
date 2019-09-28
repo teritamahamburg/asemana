@@ -131,7 +131,7 @@ export default {
       },
       query: usersQuery,
       update({ users }) {
-        return (users || []).map(u => u.name);
+        return (users || []).map((u) => u.name);
       },
     },
   },
@@ -164,7 +164,7 @@ export default {
   computed: {
     rules: () => validationRules,
     bulkAddTableHeader() {
-      return [...columns.required, ...columns.optional].map(k => ({ text: this.$t(`item.${k}`), value: k }));
+      return [...columns.required, ...columns.optional].map((k) => ({ text: this.$t(`item.${k}`), value: k }));
     },
   },
   watch: {
@@ -211,7 +211,7 @@ export default {
         if (this.bulkAdd.length === 0) {
           this.$toast.error(this.$t('validation.requiredData'), 'Error');
         }
-        const props = this.bulkAddTableHeader.map(h => h.value);
+        const props = this.bulkAddTableHeader.map((h) => h.value);
         const data = this.bulkAdd.map((arr) => {
           const obj = {};
           props.forEach((k, i) => {
@@ -252,7 +252,7 @@ export default {
       this.bulkAdd = [];
     },
     clickCSVDownload() {
-      csvDownload(`${columns.required.map(k => `${this.$t(`item.${k}`)}*`).join(',')},${columns.optional.map(k => this.$t(`item.${k}`)).join(',')}`, 'template.csv');
+      csvDownload(`${columns.required.map((k) => `${this.$t(`item.${k}`)}*`).join(',')},${columns.optional.map((k) => this.$t(`item.${k}`)).join(',')}`, 'template.csv');
     },
     clickCSVImport() {
       this.$refs.file.click();

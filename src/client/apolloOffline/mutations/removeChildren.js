@@ -12,7 +12,7 @@ export default {
   async commitMutate(vm, query, state) {
     const { childIds } = query.variables;
     query.variables.childIds = Object.keys(childIds)
-      .map(id => state.offlineItem.temp.ids[id] || id);
+      .map((id) => state.offlineItem.temp.ids[id] || id);
     await vm.$apollo.mutate(query);
   },
 };

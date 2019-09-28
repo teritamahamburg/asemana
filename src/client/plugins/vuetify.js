@@ -16,7 +16,7 @@ export default new Vuetify({
         scan: 'mdi-scanner',
         search: 'mdi-magnify',
         menu: 'mdi-menu',
-        brightness: n => `mdi-brightness-${n}`, /* 7 or 3 */
+        brightness: (n) => `mdi-brightness-${n}`, /* 7 or 3 */
         download: 'mdi-cloud-download',
         restore: 'mdi-file-restore',
         settings: 'mdi-settings',

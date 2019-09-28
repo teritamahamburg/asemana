@@ -42,10 +42,10 @@ export default {
   },
   computed: {
     itemList() {
-      return this.items.filter(item => !item.id.includes(','));
+      return this.items.filter((item) => !item.id.includes(','));
     },
     childList() {
-      return this.items.filter(item => item.id.includes(','));
+      return this.items.filter((item) => item.id.includes(','));
     },
   },
   methods: {
