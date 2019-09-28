@@ -86,7 +86,7 @@
     "postcss": "^7.0.18",
     "postcss-font-display": "^0.1.2",
     "sass": "^1.22.12",
-    "sass-loader": "^8.0.0",
+    "sass-loader": "^7.3.1",
     "serve": "^11.2.0",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
