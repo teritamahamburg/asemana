@@ -13,7 +13,7 @@ export default {
   props: {
     format: {
       type: String,
-      default: 'CODE39',
+      default: 'CODE128',
     },
     width: {
       type: Number,

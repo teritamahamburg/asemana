@@ -3,7 +3,7 @@
     <v-quagga
       class="code-stream"
       v-show="!showApplyDialog"
-      :renderTypes="['code_39_reader']"
+      :renderTypes="['code_128_reader']"
       :on-detected="onDecode"
     />
 
