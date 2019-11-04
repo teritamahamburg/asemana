@@ -36,6 +36,7 @@ export default new Vuetify({
         name: 'mdi-file-document-box',
         room: 'mdi-map-marker',
         home: 'mdi-home',
+        noCamera: 'mdi-camera-off',
       },
     },
   },

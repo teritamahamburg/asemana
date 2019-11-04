@@ -74,6 +74,7 @@ module.exports = {
       download: 'テンプレートCSVをダウンロード',
       import: 'CSVをインポート',
     },
+    noCamera: 'カメラが見つかりませんでした',
   },
   validation: {
     required: '必須',
