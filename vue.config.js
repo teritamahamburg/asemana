@@ -18,9 +18,6 @@ module.exports = {
     themeColor: '#FAFAFA',
     msTileColor: '#FAFAFA',
     appleMobileWebAppCapable: 'yes',
-    manifestOptions: {
-      display: 'fullscreen',
-    },
     iconPaths: {
       favicon32: 'img/icons/x32.png',
       favicon16: 'img/icons/x16.png',
@@ -41,15 +38,20 @@ module.exports = {
       localeDir: 'locales',
       enableInSFC: false,
     },
+    apollo: {
+      lintGQL: true,
+    },
   },
   outputDir: path.join(__dirname, 'dist', 'client'),
   configureWebpack: {
     resolveLoader: {
       modules: ['lib'],
     },
-    entry: {
-      app: './src/client/main.js',
-    },
+    entry: [
+      'core-js/modules/es.promise',
+      'core-js/modules/es.array.iterator',
+      './src/client/main.js',
+    ],
     resolve: {
       alias: {
         '@': path.join(__dirname, 'src', 'client'),

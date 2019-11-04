@@ -1,72 +1,87 @@
 <template>
-  <div class="check">
-    <v-quagga
-      class="code-stream"
-      v-show="!showApplyDialog"
-      :renderTypes="['code_39_reader']"
-      :on-detected="onDecode"
-    />
+  <div :class="{ check: hasCamera, empty: !hasCamera }">
+    <template v-if="hasCamera">
+      <v-quagga
+        class="code-stream"
+        v-show="!showApplyDialog"
+        :renderTypes="['code_128_reader']"
+        :on-detected="onDecode"
+        @error="() => this.hasCamera = false"
+      />
 
-    <div class="details-card-wrapper">
-      <item-card class="details-card" :item="editItem || {}"
-                 :entry="showEntries" first-column-width="170px"
-                 :class="{ bound }" @animationend.native="bound = false"
-                 :show-actions="['qrCode', 'edit', 'editHistory', 'remove', 'seal']"
-                 v-on="$store.getters.itemsViewMenuVOn">
+      <div class="details-card-wrapper">
+        <item-card class="details-card" :item="editItem || {}"
+                   :entry="showEntries" first-column-width="170px"
+                   :class="{ bound }" @animationend.native="bound = false"
+                   :show-actions="['qrCode', 'edit', 'editHistory', 'remove', 'seal']"
+                   v-on="$store.getters.itemsViewMenuVOn">
 
-        <template v-slot:expand:title>
-          <v-btn icon small @click="showAllEntry = !showAllEntry"
-                 :aria-label="showAllEntry ? 'collapse' : 'expand'">
-            <v-icon v-text="$vuetify.icons.values.custom[showAllEntry ? 'up' : 'down']"/>
-          </v-btn>
-        </template>
+          <template v-slot:expand:title>
+            <v-btn icon small @click="showAllEntry = !showAllEntry"
+                   :aria-label="showAllEntry ? 'collapse' : 'expand'">
+              <v-icon v-text="$vuetify.icons.values.custom[showAllEntry ? 'up' : 'down']"/>
+            </v-btn>
+          </template>
 
-        <template v-slot:expand:labels>
-          <div class="success" v-show="changed">変更済み</div>
-        </template>
+          <template v-slot:expand:labels>
+            <div class="success" v-show="changed">変更済み</div>
+          </template>
 
-        <template v-slot:expand:list>
-          <v-list-item>
-            <v-checkbox color="black" :label="$t('general.enableMutationInScan')"
-                        :value="applyChange" @change="v => v ? showDialog() : clearDialog()"/>
-          </v-list-item>
-        </template>
-      </item-card>
-    </div>
+          <template v-slot:expand:list>
+            <v-list-item>
+              <v-checkbox color="black" :label="$t('general.enableMutationInScan')"
+                          :value="applyChange" @change="v => v ? showDialog() : clearDialog()"/>
+            </v-list-item>
+          </template>
+        </item-card>
+      </div>
 
-    <v-dialog v-model="showApplyDialog" persistent max-width="600">
-      <v-card>
-        <v-card-text>
-          <v-layout>
-            <v-checkbox :label="$t('general.change')" color="black" v-model="applyDialog.editRoom"/>
-            <v-text-field :label="$t('item.room')" v-model="applyDialog.room"
-                          :disabled="!applyDialog.editRoom" type="number"/>
-          </v-layout>
-          <v-layout>
-            <v-checkbox :label="$t('general.change')" color="black"
-                        v-model="applyDialog.editCheckedAt"/>
-            <date-picker :label="$t('item.checkedAt')" v-model="applyDialog.checkedAt"
-                         :append-icon="null" :disabled="!applyDialog.editCheckedAt"/>
-          </v-layout>
-        </v-card-text>
+      <v-dialog v-model="showApplyDialog" persistent max-width="600">
+        <v-card>
+          <v-card-text>
+            <v-layout>
+              <v-checkbox
+                :label="$t('general.change')"
+                color="black"
+                v-model="applyDialog.editRoom"
+              />
+              <v-text-field :label="$t('item.room')" v-model="applyDialog.room"
+                            :disabled="!applyDialog.editRoom" type="number"/>
+            </v-layout>
+            <v-layout>
+              <v-checkbox :label="$t('general.change')" color="black"
+                          v-model="applyDialog.editCheckedAt"/>
+              <date-picker :label="$t('item.checkedAt')" v-model="applyDialog.checkedAt"
+                           :append-icon="null" :disabled="!applyDialog.editCheckedAt"/>
+            </v-layout>
+          </v-card-text>
 
-        <v-card-actions>
-          <v-spacer/>
-          <v-btn outlined @click="closeDialog(false)">
-            {{ $t('general.cancel') }}
-          </v-btn>
-          <v-btn depressed dark color="black"
-                 @click="clickApplyInDialog" :disabled="!showApplyButton">
-            {{ $t('general.apply') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+          <v-card-actions>
+            <v-spacer/>
+            <v-btn outlined @click="closeDialog(false)">
+              {{ $t('general.cancel') }}
+            </v-btn>
+            <v-btn depressed dark color="black"
+                   @click="clickApplyInDialog" :disabled="!showApplyButton">
+              {{ $t('general.apply') }}
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </template>
+    <template v-else>
+      <v-icon
+        v-text="$vuetify.icons.values.custom.noCamera"
+        class="empty--icon" />
+      <div class="headline">
+        {{ $t('general.noCamera') }}
+      </div>
+    </template>
   </div>
 </template>
 
 <script>
-import VQuagga from 'vue-quaggajs/src/Scanner.vue';
+import VQuagga from '@/components/Scanner.vue';
 
 import ItemCard from '@/components/ItemCard.vue';
 import DatePicker from '@/components/DatePicker.vue';
@@ -133,6 +148,7 @@ export default {
       changed: false,
       bound: false,
       showAllEntry: false,
+      hasCamera: true,
     };
   },
   computed: {
@@ -255,6 +271,22 @@ export default {
 
 <style scoped lang="scss">
   $bottom-bar-height: 56px;
+
+  .empty {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .empty--icon {
+      font-size: 60vw;
+
+      @media screen and (min-width: 769px) {
+        font-size: 30vw;
+      }
+    }
+  }
 
   .check {
     width: 100%;
