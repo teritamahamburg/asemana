@@ -14,6 +14,7 @@ module.exports = (on, config) => {
   //  watchOptions: {}
   // }))
 
+  // eslint-disable-next-line
   return Object.assign({}, config, {
     fixturesFolder: 'tests/e2e/fixtures',
     integrationFolder: 'tests/e2e/specs',
