@@ -31,7 +31,10 @@
       </tr>
     </template>
     <template v-slot:expanded-item="props">
-      <td v-if="props.item.children.length > 0" :colspan="props.headers.length">
+      <td
+        v-if="props.item.children && props.item.children.length > 0"
+        :colspan="props.headers.length"
+      >
         <v-card class="elevation-1">
           <v-data-table
             :mobile-breakpoint="-1"

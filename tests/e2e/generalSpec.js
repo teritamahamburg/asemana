@@ -40,13 +40,13 @@ export default (online = true) => {
 
   it('itemHistories', () => {
     cy.gql_addItem(1);
-    cy.vBtn_Click('more_vert');
+    cy.vBtn_Click('mdi-dots-vertical');
     cy.vListTile_Click(locale.general.editHistory);
     cy.waitGraphQL(); // query itemHistories
     cy.contains('No data available').should('exist');
     cy.vBtn_Click(locale.general.close);
     cy.gql_editItem();
-    cy.vBtn_Click('more_vert');
+    cy.vBtn_Click('mdi-dots-vertical');
     cy.vListTile_Click(locale.general.editHistory);
     cy.waitGraphQL(); // query itemHistories
     cy.contains('999').should('exist');
@@ -56,18 +56,18 @@ export default (online = true) => {
   it('childHistories', () => {
     cy.gql_addItem(2);
     cy.vBtnIcon_Click(locale.general.children, true);
-    cy.vBtn_Click('more_vert', '.child-card');
+    cy.vBtn_Click('mdi-dots-vertical', '.child-card:first-child');
     cy.vListTile_Click(locale.general.editHistory);
     cy.waitGraphQL(); // query childHistories
     cy.contains('No data available').should('exist');
     cy.vBtn_Click(locale.general.close);
     cy.gql_editChild(true);
     cy.wait(200);
-    cy.vBtn_Click('more_vert', '.child-card');
+    cy.vBtn_Click('mdi-dots-vertical', '.child-card:first-child');
     cy.vListTile_Click(locale.general.editHistory);
     cy.waitGraphQL(); // query childHistories
-    cy.get('.v-datatable tbody tr').children()
-      .its('length').should('not.eq', 1);
+    // cy.get('.v-data-table tbody tr').children().its('length').should('not.eq', 1);
+    cy.contains('No data available').should('not.exist');
     cy.vBtn_Click(locale.general.close);
     cy.vBtnIcon_Click(locale.general.close, false, '.item-card');
   });

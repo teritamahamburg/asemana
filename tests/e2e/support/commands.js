@@ -4,7 +4,7 @@ let ONLINE = true;
 Cypress.Commands.add('setOnline', (val) => {
   cy.window().its('store')
   // eslint-disable-next-line no-return-assign,no-param-reassign
-    .then(store => store.state.online = val);
+    .then((store) => store.state.online = val);
   ONLINE = val;
 });
 
@@ -19,27 +19,46 @@ Cypress.Commands.add('waitGraphQL', () => {
 
 Cypress.Commands.add('vInput_Type', { prevSubject: 'element' }, (subject, label, value) => {
   cy.wrap(subject, { log: false })
-    .get(`input[aria-label="${label}"]`, { log: false })
+    .get('label', { log: false })
+    .contains(label)
+    .next()
+    // .get(`input[aria-label="${label}"]`, { log: false })
     .type(`${value}{enter}{esc}`);
 });
 
 Cypress.Commands.add('vBtn_Click', (label, selector = '') => {
-  cy.contains(`${selector} .v-btn .v-btn__content`, new RegExp(`^\\s*${label}\\s*$`))
-    .parent({ log: false })
-    .focus({ log: false })
-    .click();
+  if (label.startsWith('mdi')) {
+    cy.get(`${selector} .v-btn .v-btn__content .${label}`)
+      .parent({ log: false })
+      .parent({ log: false })
+      .focus({ log: false })
+      .click();
+  } else {
+    cy.contains(`${selector} .v-btn .v-btn__content`, new RegExp(`^\\s*${label}\\s*$`))
+      .parent({ log: false })
+      .focus({ log: false })
+      .click();
+  }
 });
 
 Cypress.Commands.add('vBtnIcon_Click', (label, rightIcon = false, selector = '') => {
-  cy.contains(`${selector} .v-btn .v-btn__content`, new RegExp(`^${!rightIcon ? '(.*)\\n' : ''}\\s*${label}\\s*${rightIcon ? '\\n(.*)' : ''}$`))
+  /*
+  const reg = rightIcon
+    ? `^\\s*${label}\\s*\\n(.*)$`
+    : `^\\n(.*)\\s*${label}\\s*$`;
+  */
+
+  cy.contains(`${selector} .v-btn .v-btn__content`, label)
     .parent({ log: false })
     .focus({ log: false })
     .click();
 });
 
 Cypress.Commands.add('vListTile_Click', (label, icon = false) => {
-  cy.contains('.menuable__content__active .v-list__tile', new RegExp(`${icon ? '' : '^'}\\s*${label}\\s*$`))
-    .click();
+  cy.contains(
+    '.menuable__content__active .v-list-item__title, .v-list-item__content',
+    new RegExp(`${icon ? '' : '^'}\\s*${label}\\s*$`),
+  ).click();
 });
 
 Cypress.Commands.add('gql_addItem', (amount, checkedAt, disposalAt, depreciationAt) => {
@@ -66,7 +85,7 @@ Cypress.Commands.add('gql_addItem', (amount, checkedAt, disposalAt, depreciation
 
 Cypress.Commands.add('gql_removeItem', () => {
   cy.itemCardLength().then((length) => {
-    cy.vBtn_Click('more_vert');
+    cy.vBtn_Click('mdi-dots-vertical');
     cy.vListTile_Click(locale.general.edit);
     cy.vBtn_Click(locale.general.remove);
     cy.contains(locale.general.removeText.items.replace('{n}', 1))
@@ -80,9 +99,9 @@ Cypress.Commands.add('gql_removeItem', () => {
 
 Cypress.Commands.add('gql_removeChild', () => {
   cy.vBtnIcon_Click(locale.general.children, true, '.item-card:last-child');
-  cy.vBtn_Click('more_vert', '.child-card');
+  cy.vBtn_Click('mdi-dots-vertical', '.child-card:first-child');
   cy.vListTile_Click(locale.general.edit);
-  cy.vBtn_Click(locale.general.remove);
+  cy.vBtn_Click(locale.general.remove, '.item-edit--dialog');
   cy.contains(locale.general.removeText.children.replace('{n}', 1))
     .its('length').should('eq', 1);
   cy.vBtn_Click(locale.general.remove, '.remove--dialog');
@@ -97,7 +116,7 @@ Cypress.Commands.add('gql_removeChild', () => {
 Cypress.Commands.add('gql_editItem', () => {
   cy.contains(new RegExp(`${locale.item.room}\\s+999`))
     .its('length').should('eq', 1);
-  cy.vBtn_Click('more_vert');
+  cy.vBtn_Click('mdi-dots-vertical');
   cy.vListTile_Click(locale.general.edit);
   cy.get('.item-edit--dialog')
     .vInput_Type(locale.item.room, 9999);
@@ -110,7 +129,7 @@ Cypress.Commands.add('gql_editItem', () => {
 
 Cypress.Commands.add('gql_editChild', (opened = false) => {
   if (!opened) cy.vBtnIcon_Click(locale.general.children, true);
-  cy.vBtn_Click('more_vert', '.child-card');
+  cy.vBtn_Click('mdi-dots-vertical', '.child-card:first-child');
   cy.vListTile_Click(locale.general.edit);
   cy.get('.item-edit--dialog')
     .vInput_Type(locale.item.name, 'EDITED_NAME');
@@ -123,7 +142,7 @@ Cypress.Commands.add('gql_editChild', (opened = false) => {
 });
 
 Cypress.Commands.add('gql_restoreItem__noItem', () => {
-  cy.vBtn_Click('menu');
+  cy.vBtn_Click('mdi-menu');
   cy.vListTile_Click(locale.general.restoreItem, true);
   cy.waitGraphQL(); // query item
   cy.waitGraphQL(); // query child
@@ -132,11 +151,11 @@ Cypress.Commands.add('gql_restoreItem__noItem', () => {
 });
 
 Cypress.Commands.add('gql_restoreItem', () => {
-  cy.vBtn_Click('menu');
+  cy.vBtn_Click('mdi-menu');
   cy.vListTile_Click(locale.general.restoreItem, true);
   cy.waitGraphQL(); // query item
   cy.waitGraphQL(); // query child
-  cy.get('.item-restore--dialog .v-datatable tbody tr:nth-child(1)').click();
+  cy.get('.item-restore--dialog .v-data-table tbody tr:nth-child(1)').click();
   cy.waitGraphQL(); // mutate
   cy.waitGraphQL(); // query
   cy.gql_restoreItem__noItem();
