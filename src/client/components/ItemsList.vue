@@ -32,7 +32,7 @@
     </template>
     <template v-slot:expanded-item="props">
       <td
-        v-if="props.item.children && props.item.children.length > 0"
+        v-if="(props.item.children || []).length > 0"
         :colspan="props.headers.length"
       >
         <v-card class="elevation-1">
