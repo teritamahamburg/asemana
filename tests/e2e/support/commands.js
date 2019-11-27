@@ -87,7 +87,7 @@ Cypress.Commands.add('gql_removeItem', () => {
   cy.itemCardLength().then((length) => {
     cy.vBtn_Click('mdi-dots-vertical');
     cy.vListTile_Click(locale.general.edit);
-    cy.vBtn_Click(locale.general.remove);
+    cy.vBtn_Click(locale.general.remove, '.item-edit--dialog');
     cy.contains(locale.general.removeText.items.replace('{n}', 1))
       .its('length').should('eq', 1);
     cy.vBtn_Click(locale.general.remove, '.remove--dialog');
