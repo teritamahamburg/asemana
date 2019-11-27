@@ -1,37 +1,35 @@
 <template>
   <v-dialog :value="value" @input="v => $emit('change', v)" max-width="300">
     <v-card>
-      <template v-if="type === 'QR'">
-        <div style="display: flex; justify-content: center">
+      <v-tabs grow v-model="type">
+        <v-tab :disabled="transferring">Barcode</v-tab>
+        <v-tab :disabled="transferring">Machine</v-tab>
+      </v-tabs>
+      <template v-if="type === 0">
+        <div style="display: flex; justify-content: center;margin-top: 32px">
           <barcode v-if="text" :value="text" />
         </div>
-        <v-card-actions class="no--print">
-          <v-spacer/>
-          <span style="margin-right: 8px">Print in: </span>
-          <v-btn outlined small @click="clickPrintBrowser">
-            Browser
-          </v-btn>
-          <v-btn outlined small @click="clickPrintMachine" style="margin-left: 8px">
-            Machine
-          </v-btn>
-        </v-card-actions>
       </template>
       <template v-else>
         <div class="print--card">
           <canvas width="250" height="250" ref="transferCanvas"></canvas>
-          <v-text-field v-model="time" type="number" :disabled="transferring" />
         </div>
-
-        <v-card-actions>
-          <v-btn icon @click="clickBack" :disabled="transferring">
-            <v-icon v-text="$vuetify.icons.values.custom.back" />
-          </v-btn>
-          <v-spacer/>
-          <v-btn outlined v-show="text" @click="clickTransfer" :disabled="transferring">
-            Transfer
-          </v-btn>
-        </v-card-actions>
       </template>
+      <v-card-actions>
+        <v-btn
+          v-if="type === 1"
+          outlined
+          v-show="text"
+          @click="clickTransfer"
+          :disabled="transferring"
+        >
+          Transfer
+        </v-btn>
+        <v-spacer/>
+        <v-btn outlined @click="() => $emit('change', false)">
+          close
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -60,34 +58,30 @@ export default {
   },
   watch: {
     value() {
-      this.type = 'QR';
+      this.type = 0;
+    },
+    type(val) {
+      if (val === 1) {
+        this.clickPrintMachine();
+      }
     },
   },
   data() {
     return {
-      type: 'QR',
+      type: 0,
       transferring: false,
       time: '35',
     };
   },
   methods: {
-    clickPrintBrowser() {
-      this.$store.commit('setPrintQR', true);
-      this.$nextTick(() => {
-        window.print();
-      });
-    },
     clickPrintMachine() {
-      this.type = 'PRINT';
+      this.type = 1;
       this.$nextTick(() => {
         const canvas = this.$refs.transferCanvas;
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = '#F00';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       });
-    },
-    clickBack() {
-      this.type = 'QR';
     },
     clickTransfer() {
       const time = Number(this.time);
