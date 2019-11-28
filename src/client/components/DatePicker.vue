@@ -24,7 +24,7 @@
           return-masked-value
         ></v-text-field>
       </template>
-      <v-date-picker v-model="date" @input="menu = false"></v-date-picker>
+      <v-date-picker v-model="wrapDate" @input="menu = false"></v-date-picker>
     </v-menu>
   </div>
 </template>
@@ -70,6 +70,15 @@ export default {
     date: {
       get() {
         return this.value;
+      },
+      set(val) {
+        this.$emit('change', val);
+      },
+    },
+    wrapDate: {
+      get() {
+        if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(this.value)) return this.value;
+        return '';
       },
       set(val) {
         this.$emit('change', val);
