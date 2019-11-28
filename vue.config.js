@@ -35,7 +35,7 @@ module.exports = {
     i18n: {
       locale: 'ja',
       fallbackLocale: 'ja',
-      localeDir: 'locales',
+      localeDir: 'client/locales',
       enableInSFC: false,
     },
     apollo: {

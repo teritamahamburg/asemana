@@ -160,14 +160,15 @@ db.queries = {
       `'"' || id || '","","' || ifnull(seal, '') || '","' || replace(name, '"', '""') || '","' || replace(code, '"', '""') ||
        '","' || amount || '","' || \`admin.name\` || '","' || \`course.name\` || '","' || \`room.number\` || '","' ||
         purchasedAt || '","' || ifnull(checkedAt, '') || '","' || ifnull(disposalAt, '') || '","' ||
-       ifnull(depreciationAt, '') || '","' || createdAt || '","' || ifnull(deletedAt, '') || '"' as row`);
-    const itemRows = await db.sequelize.query(`${itemQuery}${paranoid ? '' : ' WHERE deletedAt IS NULL'} ORDER BY id;`, {
+       ifnull(depreciationAt, '') || '","' || createdAt || '","' || ifnull(deletedAt, '') || '"' as row, id`);
+    const queryResult = await db.sequelize.query(`${itemQuery}${paranoid ? '' : ' WHERE deletedAt IS NULL'} ORDER BY id;`, {
       type: Sequelize.QueryTypes.SELECT,
-    }).then((rows) => rows.map(({ row }) => row).join('\n'));
+    });
+    const itemRows = queryResult.map(({ row }) => row).join('\n');
     const childSelect = '\'"\' || itemId || \'","\' || childId || \'","","\' || replace(ifnull(name, \'\'), \'"\', \'""\') || \'","","","","","\' || ifnull(`room.number`, \'\') || \'","","\' || ifnull(checkedAt, \'\') || \'","","","\' || createdAt || \'","\' || ifnull(deletedAt, \'\') || \'"\' as row';
 
     // language=TEXT
-    const childQuery = `SELECT ${childSelect} FROM (${db.queries.childSelectQuery.replace('__INNER_ATTR__', 'GROUP BY c.itemId, c.childId')}${paranoid ? '' : ' WHERE child.deletedAt IS NULL'}) ORDER BY itemId, childId;`;
+    const childQuery = `SELECT ${childSelect} FROM (${db.queries.childSelectQuery.replace('__INNER_ATTR__', 'GROUP BY c.itemId, c.childId')}${paranoid ? '' : ` WHERE child.deletedAt IS NULL AND child.itemId in (${queryResult.map(({ id }) => id).join(',')})`}) ORDER BY itemId, childId;`;
 
     const childRows = await db.sequelize.query(childQuery, {
       type: Sequelize.QueryTypes.SELECT,

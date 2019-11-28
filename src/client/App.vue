@@ -116,7 +116,7 @@
 
     <v-btn
       fab
-      class="app--bottom-nav fab"
+      class="app--bottom-nav fab create-button--add"
       :color="$store.state.dark ? 'white black--text' : 'black white--text'"
       v-if="$route.path === '/home'"
       @click="$store.state.dialogs.add.show = true"

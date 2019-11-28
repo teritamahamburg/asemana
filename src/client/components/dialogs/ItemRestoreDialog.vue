@@ -7,7 +7,7 @@
       <items-view view-type="list" :attrs="attrs" :items="items"
                   @click:row="restoreItem" >
         <template v-slot:empty>
-          <v-layout justify-center >
+          <v-layout justify-center>
             <span class="headline">{{ $t('general.empty') }}</span>
           </v-layout>
         </template>

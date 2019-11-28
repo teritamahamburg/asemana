@@ -28,7 +28,9 @@
         @remove="i => $emit('remove', i)"
         @edit="i => $emit('edit', i)"
         @editHistory="i => $emit('editHistory', i)"
-        @qrCode="i => $emit('qrCode', i)"/>
+        @qrCode="i => $emit('qrCode', i)"
+        @click:row="i => $emit('click:row', i)"
+      />
     </slot>
   </div>
 </template>
