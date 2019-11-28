@@ -8,7 +8,7 @@ module.exports = {
     code: '資産コード',
     amount: '数量',
     admin: '管理者',
-    room: '部屋',
+    room: '部屋番号',
     course: '所属',
     purchasedAt: '購入日',
     checkedAt: '最終確認日',
