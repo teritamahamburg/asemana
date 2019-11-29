@@ -6,7 +6,7 @@
   "author": "syuchan1005<syuchan.dev@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "server:serve": "nodemon --watch src/server --watch src/server/schema.graphql --ext js,graphql --exec \\\"webpack --mode development & node dist/server\\\"",
+    "server:serve": "nodemon --watch src/server --watch src/server/schema.graphql --ext js,graphql --exec \"webpack --mode development & node dist/server\"",
     "server:build": "webpack --mode production",
     "server:start": "node dist/server",
     "server:start:test": "cross-env NODE_ENV=test npm run server:start",
