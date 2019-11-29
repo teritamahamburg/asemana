@@ -4,7 +4,7 @@ import { extname } from 'path';
 import Sequelize from 'sequelize';
 
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-koa';
-import { GraphQLDate, GraphQLDateTime, GraphQLTime } from 'graphql-iso-date';
+import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 
 import typeDefs from './schema.graphql';
 
@@ -71,7 +71,6 @@ class GraphQLMiddleware {
         typeDefs,
         resolvers: {
           Date: GraphQLDate,
-          Time: GraphQLTime,
           DateTime: GraphQLDateTime,
           Query,
           Mutation,
