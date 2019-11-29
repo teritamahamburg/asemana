@@ -475,6 +475,7 @@ class GraphQLMiddleware {
           order: [
             ['id', 'desc'],
           ],
+          include: [this.db.rooms],
         });
         return children.slice(1).map((child) => ({
           ...child.dataValues,
