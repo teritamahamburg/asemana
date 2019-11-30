@@ -12,7 +12,8 @@
         <!-- append-outer-icon without null -->
         <v-text-field
           v-model="date"
-          :label="label"
+          v-mask="'####-##-##'"
+          :label="labelWithPattern"
           :placeholder="placeholder"
           :append-outer-icon="$vuetify.icons.values.custom.close"
           @click:append-outer="$emit('change', undefined)"
@@ -30,8 +31,13 @@
 </template>
 
 <script>
+import { mask } from 'vue-the-mask';
+
 export default {
   name: 'DatePicker',
+  directives: {
+    mask,
+  },
   model: {
     prop: 'value',
     event: 'change',
@@ -77,18 +83,21 @@ export default {
     },
     wrapDate: {
       get() {
-        if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(this.value)) return this.value;
+        if (/^(\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01]))$/.test(this.value)) return this.value;
         return '';
       },
       set(val) {
         this.$emit('change', val);
       },
     },
+    labelWithPattern() {
+      return `${this.label} (yyyy-MM-dd)`;
+    },
   },
   methods: {
     dateRule(value) {
       if (!value || value.length === 0) return true;
-      if (!/^\d{4}-\d{1,2}-\d{1,2}$/.test(value)) return this.$t('validation.date.format');
+      if (!/^(\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01]))$/.test(value)) return this.$t('validation.date.format');
       const date = new Date(value);
       const dateValue = value.split('-').map(Number);
       if (date.getFullYear() !== dateValue[0]

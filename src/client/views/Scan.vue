@@ -203,7 +203,7 @@ export default {
       if (this.id === code) return;
       this.id = code;
       this.changed = false;
-      // this.mutateEditItem();
+      this.mutateEditItem();
     },
     mutateEditItem() {
       if (!this.applyChange) return;

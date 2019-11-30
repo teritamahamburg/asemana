@@ -55,6 +55,7 @@ module.exports = {
     csv: 'CSV',
     restoreItem: '資産の復元',
     restore: '復元',
+    restoreChild: '子資産を復元',
     child: '子資産',
     children: '子資産',
     select: '選択',
@@ -75,6 +76,7 @@ module.exports = {
       import: 'CSVをインポート',
     },
     noCamera: 'カメラが見つかりませんでした',
+    amountValue: '{0} | {0} (廃棄済み: {n}) | {0} (廃棄済み: {n})',
   },
   validation: {
     required: '必須',

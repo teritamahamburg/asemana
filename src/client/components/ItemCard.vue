@@ -49,7 +49,12 @@
           <v-list-item-title :style="{width:firstColumnWidth}">
             {{ $t(`item.${k}`) }}
           </v-list-item-title>
-          <v-list-item-subtitle>{{listEntry[k]}}</v-list-item-subtitle>
+          <v-list-item-subtitle>
+            {{ k !== 'amount'
+            ? listEntry[k]
+            : $tc('general.amountValue', item.children
+                    .filter((c) => c.deletedAt).length, [listEntry[k]]) }}
+          </v-list-item-subtitle>
         </v-list-item>
 
         <slot name="expand:list"/>
@@ -67,33 +72,47 @@
 
     <template v-else-if="panel === 1">
       <v-card-text class="child-cards" :style="{ height: `${childrenHeight}px` }">
-        <v-card v-for="child in item.children" :key="child.id" class="child-card">
-          <v-card-title class="item-title">
-            <span class="title">{{ child.name || item.name }}</span>
-            <v-spacer/>
-            <v-checkbox color="black" hide-details class="select-check" height="18"
-                        :input-value="selectedItems.find(({ id }) => id === child.id)"
-                        @change="v => $emit('select', v, child)" v-if="!hideAction('select')"/>
-            <v-menu offset-y v-if="!hideAction('menu')">
-              <template v-slot:activator="{ on }">
-                <v-btn icon small style="margin: 0" v-on="on" aria-label="CardMenu">
-                  <v-icon v-text="$vuetify.icons.values.custom.cardMenu" />
-                </v-btn>
-              </template>
+        <template v-for="child in item.children">
+          <div :key="child.id" class="child-card">
+            <div v-if="child.deletedAt" class="deleted">
+              <v-btn
+                @click="restoreChild(child)"
+                outlined
+                color="white"
+                style="background:rgba(255, 255, 255, 0.1)"
+              >
+                {{ $t('general.restoreChild') }}
+              </v-btn>
+            </div>
+            <v-card shaped elevation="2">
+              <v-card-title class="item-title">
+                <span class="title">{{ child.name || item.name }}</span>
+                <v-spacer/>
+                <v-checkbox color="black" hide-details class="select-check" height="18"
+                            :input-value="selectedItems.find(({ id }) => id === child.id)"
+                            @change="v => $emit('select', v, child)" v-if="!hideAction('select')"/>
+                <v-menu offset-y v-if="!hideAction('menu')">
+                  <template v-slot:activator="{ on }">
+                    <v-btn icon small style="margin: 0" v-on="on" aria-label="CardMenu">
+                      <v-icon v-text="$vuetify.icons.values.custom.cardMenu" />
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item v-for="m in menuItems" :key="m[0]" @click="$emit(m[0], child)">
+                      <v-list-item-title>{{ m[1] }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-card-title>
               <v-list>
-                <v-list-item v-for="m in menuItems" :key="m[0]" @click="$emit(m[0], child)">
-                  <v-list-item-title>{{ m[1] }}</v-list-item-title>
+                <v-list-item v-for="k in ['id', 'room', 'checkedAt']" :key="k">
+                  <v-list-item-title>{{$t(`item.${k}`)}}</v-list-item-title>
+                  <v-list-item-subtitle>{{child[k]}}</v-list-item-subtitle>
                 </v-list-item>
               </v-list>
-            </v-menu>
-          </v-card-title>
-          <v-list>
-            <v-list-item v-for="k in ['id', 'room', 'checkedAt']" :key="k">
-              <v-list-item-title>{{$t(`item.${k}`)}}</v-list-item-title>
-              <v-list-item-subtitle>{{child[k]}}</v-list-item-subtitle>
-            </v-list-item>
-          </v-list>
-        </v-card>
+            </v-card>
+          </div>
+        </template>
       </v-card-text>
 
       <v-card-actions>
@@ -196,6 +215,19 @@ export default {
       this.$store.state.dialogs.seal.image = image;
       this.$store.state.dialogs.seal.show = true;
     },
+    restoreChild({ id }) {
+      this.$mutate('restoreChild', {
+        variables: { childId: id },
+      }).then(({ data: { restoreChild: { success, message } } }) => {
+        if (success) {
+          this.$broadcast.$emit('items:refetch');
+        } else if (window.gqlError) {
+          window.gqlError({ message });
+        }
+      }).catch((error) => {
+        if (window.gqlError) window.gqlError(error);
+      });
+    },
   },
 };
 </script>
@@ -262,9 +294,25 @@ export default {
 
     .child-cards {
       overflow-y: auto;
-      .v-card + .v-card {
-        margin-top: 8px;
+    }
+
+    .child-card {
+      position: relative;
+
+      & > .deleted {
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
+    }
+
+    .child-card + .child-card {
+      margin-top: 8px;
     }
   }
 </style>

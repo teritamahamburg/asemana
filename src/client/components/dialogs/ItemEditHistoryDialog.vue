@@ -13,14 +13,8 @@
         hide-default-footer
         :mobile-breakpoint="-1"
         :headers="headers"
-        :items="id && id.includes(',') ? childHistories : histories">
-        <template v-slot:items="props">
-          <tr :key="props.index">
-            <td v-for="k in Object.keys(props.item)" :key="`${props.index}-${k}`">
-              {{ props.item[k] }}
-            </td>
-          </tr>
-        </template>
+        :items="id && id.includes(',') ? childHistories : histories"
+        item-key="createdAt">
       </v-data-table>
     </v-card>
   </v-dialog>
@@ -40,6 +34,7 @@ export default {
         return !this.id || this.id.includes(',');
       },
       query: itemHistoriesQuery,
+      fetchPolicy: 'no-cache',
       variables() {
         return {
           id: this.id,
@@ -65,6 +60,7 @@ export default {
         return !this.id || !this.id.includes(',');
       },
       query: childHistoriesQuery,
+      fetchPolicy: 'no-cache',
       variables() {
         return {
           childId: this.id,

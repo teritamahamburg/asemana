@@ -4,7 +4,7 @@ import { extname } from 'path';
 import Sequelize from 'sequelize';
 
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-koa';
-import { GraphQLDate, GraphQLDateTime, GraphQLTime } from 'graphql-iso-date';
+import { GraphQLDate, GraphQLDateTime } from 'graphql-iso-date';
 
 import typeDefs from './schema.graphql';
 
@@ -71,7 +71,6 @@ class GraphQLMiddleware {
         typeDefs,
         resolvers: {
           Date: GraphQLDate,
-          Time: GraphQLTime,
           DateTime: GraphQLDateTime,
           Query,
           Mutation,
@@ -455,7 +454,7 @@ class GraphQLMiddleware {
         return items.slice(1);
       },
       children: async ({ id }) => {
-        const children = await this.db.queries.children({ itemId: id });
+        const children = await this.db.queries.children({ itemId: id, childEnum: 'ALL' });
         return children.map((child) => ({
           ...child,
           id: util.concatId(id, child.childId),
@@ -476,6 +475,7 @@ class GraphQLMiddleware {
           order: [
             ['id', 'desc'],
           ],
+          include: [this.db.rooms],
         });
         return children.slice(1).map((child) => ({
           ...child.dataValues,
