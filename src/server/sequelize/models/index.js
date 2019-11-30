@@ -80,7 +80,7 @@ db.queries = {
     let query;
     let replacements;
     if (itemId) {
-      query = `${db.queries.childSelectQuery.replace('__INNER_ATTR__', 'WHERE itemId = ? GROUP BY c.childId')} WHERE child.deletedAt is ${childEnum === 'NORMAL' ? '' : 'not '}null`;
+      query = `${db.queries.childSelectQuery.replace('__INNER_ATTR__', 'WHERE itemId = ? GROUP BY c.childId')} ${childEnum === 'ALL' ? '' : `WHERE child.deletedAt is ${childEnum === 'NORMAL' ? '' : 'not '}null`}`;
       replacements = [itemId];
     } else if (childEnum === 'ONLY_DELETED') {
       query = `${db.queries.childSelectQuery.replace('__INNER_ATTR__', 'GROUP BY c.itemId, c.childId')} WHERE child.deletedAt is not null`;

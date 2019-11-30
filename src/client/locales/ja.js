@@ -55,6 +55,7 @@ module.exports = {
     csv: 'CSV',
     restoreItem: '資産の復元',
     restore: '復元',
+    restoreChild: '子資産を復元',
     child: '子資産',
     children: '子資産',
     select: '選択',

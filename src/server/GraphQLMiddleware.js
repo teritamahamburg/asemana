@@ -454,7 +454,7 @@ class GraphQLMiddleware {
         return items.slice(1);
       },
       children: async ({ id }) => {
-        const children = await this.db.queries.children({ itemId: id });
+        const children = await this.db.queries.children({ itemId: id, childEnum: 'ALL' });
         return children.map((child) => ({
           ...child,
           id: util.concatId(id, child.childId),
