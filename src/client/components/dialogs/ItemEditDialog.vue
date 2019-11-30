@@ -67,6 +67,11 @@ import DatePicker from '@/components/DatePicker.vue';
 import FileInput from '@/components/FileInput.vue';
 import validationRules from '@/ValidationRules';
 
+const todayStr = () => {
+  const date = new Date();
+  return `${date.getFullYear()}-${(date.getMonth() + 1).toString(10).padStart(2, '0')}-${(date.getDate()).toString(10).padStart(2, '0')}`;
+};
+
 export default {
   name: 'ItemEditDialog',
   components: { FileInput, DatePicker },
@@ -93,14 +98,14 @@ export default {
       editItem: {
         seal: undefined,
         room: undefined,
-        checkedAt: undefined,
+        checkedAt: todayStr(),
         disposalAt: undefined,
         depreciationAt: undefined,
       },
       editChildItem: {
         name: undefined,
         room: undefined,
-        checkedAt: undefined,
+        checkedAt: todayStr(),
       },
     };
   },
@@ -112,6 +117,9 @@ export default {
       Object.keys(this.editChildItem).forEach((k) => {
         this.editChildItem[k] = undefined;
       });
+      const today = todayStr();
+      this.editItem.checkedAt = today;
+      this.editChildItem.checkedAt = today;
     },
   },
   computed: {
