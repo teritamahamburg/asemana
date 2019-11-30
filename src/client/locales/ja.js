@@ -76,6 +76,7 @@ module.exports = {
       import: 'CSVをインポート',
     },
     noCamera: 'カメラが見つかりませんでした',
+    amountValue: '{0} | {0} (廃棄済み: {n}) | {0} (廃棄済み: {n})',
   },
   validation: {
     required: '必須',

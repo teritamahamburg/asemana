@@ -49,7 +49,12 @@
           <v-list-item-title :style="{width:firstColumnWidth}">
             {{ $t(`item.${k}`) }}
           </v-list-item-title>
-          <v-list-item-subtitle>{{listEntry[k]}}</v-list-item-subtitle>
+          <v-list-item-subtitle>
+            {{ k !== 'amount'
+            ? listEntry[k]
+            : $tc('general.amountValue', item.children
+                    .filter((c) => c.deletedAt).length, [listEntry[k]]) }}
+          </v-list-item-subtitle>
         </v-list-item>
 
         <slot name="expand:list"/>
