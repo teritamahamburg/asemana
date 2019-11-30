@@ -68,7 +68,6 @@ export default {
       },
       update({ child }) {
         if (!child) return [];
-        console.log(child);
         return child.childHistories.map((item) => {
           const i = {
             ...item,
