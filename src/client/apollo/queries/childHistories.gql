@@ -1,6 +1,6 @@
 query ($childId: ID!){
     child(childId: $childId) {
-        childHistories: histories {
+        histories {
             id
             name
             checkedAt
@@ -8,6 +8,10 @@ query ($childId: ID!){
                 id
                 number
             }
+            createdAt
+        }
+        events {
+            event
             createdAt
         }
     }

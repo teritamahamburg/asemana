@@ -189,6 +189,7 @@ db.queries = {
  * @prop {object} users
  * @prop {object} rooms
  * @prop {object} courses
+ * @prop {object} itemsEvents
  * @prop {object} queries
  * @prop {object} sequelize
  */

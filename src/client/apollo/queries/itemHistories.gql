@@ -12,5 +12,9 @@ query ($id: ID!){
             }
             createdAt
         }
+        events {
+            event
+            createdAt
+        }
     }
 }

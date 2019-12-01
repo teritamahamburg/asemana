@@ -181,6 +181,13 @@ class GraphQLMiddleware {
             purchasedAt: data.purchasedAt,
             createdAt: data.createdAt,
           });
+          await this.db.itemsEvents.create({
+            itemId: item.id,
+            childId: null,
+            event: 'CREATED',
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt,
+          });
         } catch (e) {
           return {
             success: false,
@@ -203,9 +210,18 @@ class GraphQLMiddleware {
         }
 
         if (data.amount > 1) {
-          await this.db.childHistories.bulkCreate([...Array(data.amount).keys()].map((i) => ({
-            itemId: item.id,
-            childId: i + 1,
+          const children = await this.db.childHistories.bulkCreate(
+            [...Array(data.amount).keys()].map((i) => ({
+              itemId: item.id,
+              childId: i + 1,
+            })),
+          );
+          await this.db.itemsEvents.bulkCreate(children.map((child) => ({
+            itemId: child.itemId,
+            childId: child.childId,
+            event: 'CREATED',
+            createdAt: child.createdAt,
+            updatedAt: child.updatedAt,
           })));
         }
 
@@ -305,6 +321,11 @@ class GraphQLMiddleware {
             id: ids,
           },
         });
+        await this.db.itemsEvents.bulkCreate(ids.map((itemId) => ({
+          itemId,
+          childId: null,
+          event: 'REMOVED',
+        })));
         return {
           success: true,
         };
@@ -329,6 +350,11 @@ class GraphQLMiddleware {
         }
         await this.db.items.restore({
           where: { id },
+        });
+        await this.db.itemsEvents.create({
+          itemId: id,
+          childId: null,
+          event: 'RESTORED',
         });
         return {
           success: true,
@@ -411,12 +437,18 @@ class GraphQLMiddleware {
             [Sequelize.Op.or]: ids,
           },
         });
+        await this.db.itemsEvents.bulkCreate(ids.map(({ itemId, childId }) => ({
+          itemId,
+          childId,
+          event: 'REMOVED',
+        })));
         return {
           success: true,
         };
       },
       restoreChild: async (parent, { childId: id }) => {
         const [itemId, childId] = util.splitId(id);
+        // itemId,childId持ちは複数ある(履歴保存のため)ので, findAllする
         const children = await this.db.childHistories.findAll({
           paranoid: false,
           attributes: ['id', 'deletedAt'],
@@ -432,6 +464,11 @@ class GraphQLMiddleware {
           where: {
             id: children.map((c) => c.id),
           },
+        });
+        await this.db.itemsEvents.create({
+          itemId,
+          childId,
+          event: 'RESTORED',
         });
         return {
           success: true,
@@ -461,6 +498,9 @@ class GraphQLMiddleware {
           internalId: child.id,
         }));
       },
+      events: ({ id }) => this.db.itemsEvents.findAll({
+        where: { itemId: id, childId: null },
+      }),
     };
   }
 
@@ -477,13 +517,16 @@ class GraphQLMiddleware {
           ],
           include: [this.db.rooms],
         });
-        return children.slice(1).map((child) => ({
+        return children.slice(1, -1).map((child) => ({
           ...child.dataValues,
           id: util.concatId(itemId, child.childId),
           internalId: child.id,
         }));
       },
       item: ({ itemId }) => this.Query.item(undefined, { id: itemId }),
+      events: ({ itemId, childId }) => this.db.itemsEvents.findAll({
+        where: { itemId, childId },
+      }),
     };
   }
 

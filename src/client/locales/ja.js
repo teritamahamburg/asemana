@@ -88,4 +88,9 @@ module.exports = {
       invalid: '日付が不正です',
     },
   },
+  event: {
+    CREATED: '追加',
+    REMOVED: '削除',
+    RESTORED: '復元',
+  },
 };
