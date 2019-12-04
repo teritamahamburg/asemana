@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="value" @input="v => $emit('change', v)" max-width="300">
+  <v-dialog :value="value" @input="v => !transferring && $emit('change', v)" max-width="300">
     <v-card>
       <v-tabs grow v-model="type">
         <v-tab :disabled="transferring">Barcode</v-tab>
@@ -12,7 +12,8 @@
       </template>
       <template v-else>
         <div class="print--card">
-          <canvas width="250" height="250" ref="transferCanvas"></canvas>
+          <canvas width="250" height="250" ref="transferCanvas"/>
+          <v-text-field class="timimg" type="number" label="Timing" v-model="time"/>
         </div>
       </template>
       <v-card-actions>
@@ -26,7 +27,7 @@
           Transfer
         </v-btn>
         <v-spacer/>
-        <v-btn outlined @click="() => $emit('change', false)">
+        <v-btn outlined :disabled="transferring" @click="() => $emit('change', false)">
           close
         </v-btn>
       </v-card-actions>
@@ -70,7 +71,7 @@ export default {
     return {
       type: 0,
       transferring: false,
-      time: '35',
+      time: 35,
     };
   },
   methods: {
@@ -84,14 +85,16 @@ export default {
       });
     },
     clickTransfer() {
-      const time = Number(this.time);
       requestAnimationFrame((startTime) => {
         let start = startTime;
         const bin = `32${this.text
           .split('')
-          .map((c) => Number(c).toString(2).padStart(4, '0'))
-          .join('')
-          .split('')
+          .map((c) => (c === ','
+            ? '10'
+            : Number(c).toString(2).padStart(4, '0')
+              .split('')
+              .join('2')
+          ))
           .join('2')
         }23`;
         const canvas = this.$refs.transferCanvas;
@@ -100,7 +103,7 @@ export default {
         let i = 0;
         let b = 0;
         const render = (timestamp) => {
-          if (timestamp - start >= time) {
+          if (timestamp - start >= this.time) {
             start = timestamp;
             if (bin.length === i) {
               this.transferring = false;
@@ -128,12 +131,18 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .print--card {
     display: flex;
     flex-direction: column;
     padding: 8px;
     justify-content: center;
     align-items: center;
+
+    & .timimg {
+      align-self: flex-end;
+      margin-right: 24px;
+      width: 60px;
+    }
   }
 </style>
