@@ -7,16 +7,21 @@
         :attrs="$store.state.attrs.filter(({ show }) => !(show === false))"
         v-on="$store.getters.itemsViewMenuVOn"
         :selected-items="$store.state.dialogs.selectItems"
-        @select="(v, i, l) => $store.commit('setSelectItems', l)"/>
+        @select="(v, i, l) => $store.commit('setSelectItems', l)"
+        viewPadding="16px 0 72px 0"
+      />
     </template>
 
     <template v-else>
-      <items-view :items="searchItems"
-                  class="items-view"
-                  :viewType="$store.state.itemsView.viewType"
-                  :attrs="$store.state.attrs
-                    .filter(({ key }) => key !== 'select' && !(show === false))"
-                  v-on="$store.getters.itemsViewMenuVOn">
+      <items-view
+        :items="searchItems"
+        class="items-view"
+        :viewType="$store.state.itemsView.viewType"
+        :attrs="$store.state.attrs
+          .filter(({ key }) => key !== 'select' && !(show === false))"
+        v-on="$store.getters.itemsViewMenuVOn"
+        viewPadding="16px 0 72px 0"
+      >
         <template v-slot:empty>
           <div
             style="text-align: center;margin-top: 20%"
@@ -28,11 +33,14 @@
           <div v-else></div>
         </template>
       </items-view>
-      <items-view :items="searchChildren"
-                  class="items-view"
-                  :viewType="$store.state.itemsView.viewType"
-                  :attrs="childAttr"
-                  v-on="$store.getters.itemsViewMenuVOn">
+      <items-view
+        viewPadding="16px 0 72px 0"
+        :items="searchChildren"
+        class="items-view"
+        :viewType="$store.state.itemsView.viewType"
+        :attrs="childAttr"
+        v-on="$store.getters.itemsViewMenuVOn"
+      >
         <template v-slot:empty><div></div></template>
       </items-view>
     </template>
