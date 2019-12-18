@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="value" @input="v => !transferring && $emit('change', v)" max-width="300">
+  <v-dialog :value="value" persistent max-width="300">
     <v-card>
       <v-tabs grow v-model="type">
         <v-tab :disabled="transferring">Barcode</v-tab>
