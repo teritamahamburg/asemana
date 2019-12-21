@@ -41,6 +41,7 @@ Cypress.Commands.add('vBtn_Click', (label, selector = '') => {
   }
 });
 
+// eslint-disable-next-line no-unused-vars
 Cypress.Commands.add('vBtnIcon_Click', (label, rightIcon = false, selector = '') => {
   /*
   const reg = rightIcon

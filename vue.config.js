@@ -27,7 +27,8 @@ module.exports = {
     },
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {
-      swSrc: 'src/client/service-worker.js',
+      importWorkboxFrom: 'local',
+      swSrc: path.join('src', 'client', 'service-worker.js'),
       swDest: 'service-worker.js',
     },
   },
@@ -47,11 +48,9 @@ module.exports = {
     resolveLoader: {
       modules: ['lib'],
     },
-    entry: [
-      'core-js/modules/es.promise',
-      'core-js/modules/es.array.iterator',
-      './src/client/main.js',
-    ],
+    entry: {
+      app: './src/client/main.js',
+    },
     resolve: {
       alias: {
         '@': path.join(__dirname, 'src', 'client'),
