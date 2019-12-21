@@ -16,13 +16,6 @@
                    :show-actions="['qrCode', 'edit', 'editHistory', 'remove', 'seal']"
                    v-on="$store.getters.itemsViewMenuVOn">
 
-          <template v-slot:expand:title>
-            <v-btn icon small @click="showAllEntry = !showAllEntry"
-                   :aria-label="showAllEntry ? 'collapse' : 'expand'">
-              <v-icon v-text="$vuetify.icons.values.custom[showAllEntry ? 'up' : 'down']"/>
-            </v-btn>
-          </template>
-
           <template v-slot:expand:labels>
             <div class="success" v-show="changed">変更済み</div>
           </template>
@@ -147,7 +140,6 @@ export default {
       },
       changed: false,
       bound: false,
-      showAllEntry: false,
       hasCamera: true,
     };
   },
@@ -179,11 +171,6 @@ export default {
       };
     },
     showEntries() {
-      if (this.showAllEntry && this.computedItem) {
-        return this.$store.state.attrs
-          .filter(({ type, show }) => type === 'value' && !(show === false))
-          .map(({ key }) => key);
-      }
       return ['room', 'checkedAt'];
     },
     computedItem() {
