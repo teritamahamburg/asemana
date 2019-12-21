@@ -145,6 +145,7 @@ class GraphQLMiddleware {
           },
           order: [['id', 'desc']],
           limit: 1,
+          include: [this.db.rooms],
         }).then((c) => itemToQL(c.dataValues));
       },
       csv: (parent, { paranoid }) => this.db.queries.csv({ paranoid }),

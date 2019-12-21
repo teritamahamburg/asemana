@@ -90,6 +90,7 @@ export default {
         return !(this.$store.state.online && this.id && !this.id.includes(','));
       },
       query: itemQuery,
+      fetchPolicy: 'network-only',
       variables() {
         return {
           id: this.id,
@@ -101,6 +102,7 @@ export default {
           admin: item.admin.name,
           course: item.course.name,
           room: item.room.number,
+          code: this.id,
         };
         // eslint-disable-next-line no-underscore-dangle
         delete i.__typename;
@@ -112,6 +114,7 @@ export default {
         return !(this.$store.state.online && this.id && this.id.includes(','));
       },
       query: childQuery,
+      fetchPolicy: 'network-only',
       variables() {
         return {
           childId: this.id,
@@ -119,9 +122,10 @@ export default {
       },
       update({ child }) {
         /* eslint-disable no-param-reassign */
-        if (!child.name) child.name = child.item.name;
-        child.room = child.room ? child.room.number : !child.item.room.number;
-        if (!child.checkedAt) child.checkedAt = child.item.checkedAt;
+        child.name = child.name || child.item.name;
+        child.room = child.room ? child.room.number : child.item.room.number;
+        child.checkedAt = child.checkedAt || child.item.checkedAt;
+        child.code = this.id;
         delete child.item;
         return child;
       },
@@ -171,10 +175,12 @@ export default {
       };
     },
     showEntries() {
-      return ['room', 'checkedAt'];
+      return ['code', 'room', 'checkedAt'];
     },
     computedItem() {
-      if (this.$store.state.online) return this.item;
+      if (this.$store.state.online) {
+        return (this.id || '').includes(',') ? this.child : this.item;
+      }
       const i = this.id.toString();
       return this.$store.getters.itemsWithOfflineParanoid
         .find(({ id }) => id.toString() === i);
