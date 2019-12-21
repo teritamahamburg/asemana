@@ -15,6 +15,19 @@
         :headers="headers"
         :items="id && id.includes(',') ? childHistories : histories"
         item-key="createdAt">
+        <template v-slot:item="{ item }">
+          <tr v-if="!item.event">
+            <td v-for="h in headers" :key="h.value">
+              {{ item[h.value] }}
+            </td>
+          </tr>
+          <tr v-else style="background: rgba(0, 0, 0, 0.1)">
+            <td :colspan="headers.length - 1" style="text-align: center">
+              {{ $t(`event.${item.event}`) }}
+            </td>
+            <td>{{ item.createdAt }}</td>
+          </tr>
+        </template>
       </v-data-table>
     </v-card>
   </v-dialog>
@@ -23,6 +36,8 @@
 <script>
 import itemHistoriesQuery from '@/apollo/queries/itemHistories.gql';
 import childHistoriesQuery from '@/apollo/queries/childHistories.gql';
+
+import { dateStr } from '@/util';
 
 export default {
   name: 'ItemEditHistoryDialog',
@@ -42,15 +57,24 @@ export default {
       },
       update({ item }) {
         if (!item) return [];
-        return item.histories.map((it) => {
-          const i = {
-            ...it,
-            room: it.room.number,
-          };
-          // eslint-disable-next-line no-underscore-dangle
-          delete i.__typename;
-          return i;
-        });
+        return [
+          ...item.histories.map((it) => {
+            const i = {
+              ...it,
+              room: it.room.number,
+            };
+            // eslint-disable-next-line no-underscore-dangle
+            delete i.__typename;
+            return i;
+          }),
+          ...item.events.map((event) => {
+            // eslint-disable-next-line
+            delete event.__typename;
+            return event;
+          }),
+        ].map((a) => ({ ...a, createdAt: new Date(a.createdAt) }))
+          .sort((a, b) => b.createdAt - a.createdAt)
+          .map((a) => ({ ...a, createdAt: dateStr(a.createdAt) }));
       },
     },
     childHistories: {
@@ -68,15 +92,24 @@ export default {
       },
       update({ child }) {
         if (!child) return [];
-        return child.childHistories.map((item) => {
-          const i = {
-            ...item,
-            room: item.room ? item.room.number : null,
-          };
-          // eslint-disable-next-line no-underscore-dangle
-          delete i.__typename;
-          return i;
-        });
+        return [
+          ...child.histories.map((item) => {
+            const i = {
+              ...item,
+              room: item.room ? item.room.number : null,
+            };
+            // eslint-disable-next-line no-underscore-dangle
+            delete i.__typename;
+            return i;
+          }),
+          ...child.events.map((event) => {
+            // eslint-disable-next-line
+            delete event.__typename;
+            return event;
+          }),
+        ].map((a) => ({ ...a, createdAt: new Date(a.createdAt) }))
+          .sort((a, b) => b.createdAt - a.createdAt)
+          .map((a) => ({ ...a, createdAt: dateStr(a.createdAt) }));
       },
     },
   },
@@ -111,10 +144,11 @@ export default {
   },
   computed: {
     headers() {
-      if (!this.id) return [];
-      const h = this.id.includes(',') ? this.childHistories : this.histories;
-      if (!h || h.length === 0) return [];
-      return Object.keys(h[0])
+      const headers = {
+        item: ['id', 'room', 'checkedAt', 'disposalAt', 'depreciationAt', 'createdAt'],
+        child: ['id', 'name', 'room', 'checkedAt', 'createdAt'],
+      };
+      return (this.id && this.id.includes(',') ? headers.child : headers.item)
         .map((k) => ({ value: k, text: this.$t(`item.${k}`) }));
     },
   },

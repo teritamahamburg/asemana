@@ -10,3 +10,5 @@ export const csvDownload = (csv, filename = 'items.csv') => {
   event.initEvent('click', true, true);
   a.dispatchEvent(event);
 };
+
+export const dateStr = (date) => `${date.getFullYear()}-${(date.getMonth() + 1).toString(10).padStart(2, '0')}-${(date.getDate()).toString(10).padStart(2, '0')} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;

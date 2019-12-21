@@ -1,5 +1,5 @@
 <template>
-  <div class="items-view">
+  <div class="items-view" :style="{ padding: viewPadding }">
     <slot name="empty" v-if="empty">
       <div class="empty">
         <v-icon class="empty--icon" v-text="$vuetify.icons.values.custom.devices" />
@@ -59,6 +59,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    viewPadding: {
+      type: String,
+      default: '8px 0',
+    },
   },
   /*
   event: [
@@ -116,8 +120,6 @@ export const viewTypes = [
 
 <style scoped lang="scss">
   .items-view {
-    padding: 8px 0;
-
     .empty {
       width: 100%;
       height: 100%;

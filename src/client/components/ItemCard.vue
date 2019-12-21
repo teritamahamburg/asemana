@@ -201,10 +201,10 @@ export default {
       let { marginBottom } = window.getComputedStyle(this.$refs.itemCard.$el);
       marginBottom = Number(marginBottom.substr(0, marginBottom.length - 2));
       this.childrenHeight = this.$refs.itemAttrList.$el.clientHeight + marginBottom;
-      this.panel = this.panel + 1;
+      this.panel += 1;
     },
     decrementPanel() {
-      this.panel = this.panel - 1;
+      this.panel -= 1;
     },
     hideAction(name) {
       if (typeof this.showActions === 'boolean') return !this.showActions;

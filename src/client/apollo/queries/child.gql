@@ -8,6 +8,7 @@ query ($childId: ID!) {
         checkedAt
 
         item {
+            id
             name
             room {
                 number

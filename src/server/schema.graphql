@@ -89,6 +89,7 @@ type Item {
     # Option
     histories: [HistoryItem!]!
     children: [ChildItem!]!
+    events: [Event!]!
 }
 
 type HistoryItem {
@@ -114,9 +115,10 @@ type ChildItem {
     createdAt: DateTime!
     deletedAt: DateTime
 
+    # Option
     histories: [HistoryChildItem!]!
-
     item: Item!
+    events: [Event!]!
 }
 
 type HistoryChildItem {
@@ -135,6 +137,17 @@ type HistoryChildItem {
 type CSV {
     columns: [String!]!
     rows: String!
+}
+
+enum EventType {
+    CREATED
+    REMOVED
+    RESTORED
+}
+
+type Event {
+    event: EventType!
+    createdAt: DateTime!
 }
 
 input ItemInput {

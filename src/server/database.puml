@@ -106,9 +106,21 @@ Table(child_histories) {
     deletedAt datetime
 }
 
+Table(items_events) {
+    primary_key(id) integer
+    ---
+    foreign_key_not_null(itemId) integer
+    childId integer
+    event enum(CREATED, REMOVED, RESTORED)
+    ---
+    $not_null(createdAt) datetime
+    $not_null(updatedAt) datetime
+}
+
 ' relations
 items --|{ item_histories: itemId:id
 items --|{ child_histories: itemId:id
+items --|{ items_events: itemId:id
 items }o-- users: adminId:id
 items }o-- courses: courseId:id
 item_histories }o-- rooms: roomId:id

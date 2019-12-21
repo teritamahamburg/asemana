@@ -16,6 +16,7 @@ export default {
     onDetected: {
       type: Function,
       default(result) {
+        // eslint-disable-next-line
         console.log('detected: ', result);
       },
     },
