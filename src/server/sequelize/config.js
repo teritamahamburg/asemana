@@ -13,5 +13,6 @@ module.exports = {
   production: {
     dialect: 'sqlite',
     storage: 'production.sqlite',
+    logging: debug('db'),
   },
 };
