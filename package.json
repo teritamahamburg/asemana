@@ -19,7 +19,8 @@
     "server:build": "webpack --mode production",
     "server:serve": "nodemon --watch src/server --watch src/server/schema.graphql --ext js,graphql --exec \"webpack --mode development & node dist/server\"",
     "server:start": "node dist/server",
-    "server:start:test": "cross-env NODE_ENV=test npm run server:start"
+    "server:start:test": "cross-env NODE_ENV=test npm run server:start",
+    "start": "cross-env NODE_ENV=production ASEMANA=local npm run server:start"
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.6.5",

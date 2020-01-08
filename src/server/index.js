@@ -28,7 +28,12 @@ app.use(router.allowedMethods());
 app.use(Serve('storage'));
 
 app.use(apiFallback());
-app.use(Serve('public'));
+
+if (process.env.ASEMANA === 'local') {
+  app.use(Serve('dist/client'));
+} else {
+  app.use(Serve('public'));
+}
 
 (async () => {
   await db.sequelize.sync();
