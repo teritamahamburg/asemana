@@ -52,7 +52,7 @@
           <v-list-item-subtitle>
             {{ k !== 'amount'
             ? listEntry[k]
-            : $tc('general.amountValue', item.children
+            : $tc('general.amountValue', (item.children || [])
                     .filter((c) => c.deletedAt).length, [listEntry[k]]) }}
           </v-list-item-subtitle>
         </v-list-item>

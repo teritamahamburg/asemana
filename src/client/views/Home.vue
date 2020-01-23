@@ -18,7 +18,7 @@
         class="items-view"
         :viewType="$store.state.itemsView.viewType"
         :attrs="$store.state.attrs
-          .filter(({ key }) => key !== 'select' && !(show === false))"
+          .filter(({ key, show }) => key !== 'select' && !(show === false))"
         v-on="$store.getters.itemsViewMenuVOn"
         viewPadding="16px 0 72px 0"
       >

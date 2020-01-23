@@ -142,6 +142,7 @@ export default {
         editCheckedAt: false,
         checkedAt: undefined,
       },
+      decoded: false,
       changed: false,
       bound: false,
       hasCamera: true,
@@ -189,6 +190,10 @@ export default {
   watch: {
     computedItem() {
       this.bound = true;
+      if (this.decoded) {
+        this.mutateEditItem();
+      }
+      this.decoded = false;
     },
   },
   methods: {
@@ -196,7 +201,7 @@ export default {
       if (this.id === code) return;
       this.id = code;
       this.changed = false;
-      this.mutateEditItem();
+      this.decoded = true;
     },
     mutateEditItem() {
       if (!this.applyChange) return;
@@ -208,7 +213,6 @@ export default {
         && this.computedItem.checkedAt !== this.applyDialog.checkedAt) {
         data.checkedAt = this.applyDialog.checkedAt;
       }
-      if (Object.keys(data).length <= 1) return;
       const mutateName = this.id.includes(',') ? 'editChildren' : 'editItems';
       this.$mutate(mutateName, {
         variables: {
